@@ -112,21 +112,24 @@
     function runAway() {
       hoverCount++;
 
-      // Sequential message every 7 hovers
-      if (hoverCount % 7 === 0) {
+      // Sequential messages every 7 hovers
+      if (hoverCount % 7 === 0 && hoverCount < 36) {
         const messageIndex = Math.floor(hoverCount / 7) - 1;
-
         if (messageIndex < hoverMessages.length) {
-          showPopup(`aaron say ${hoverMessages[messageIndex]}`);
-        } else if (messageIndex === hoverMessages.length) {
-          showPopup("aaron say You can't say No 😈💖");
-          noButton.removeEventListener("mouseenter", runAway);
-          noButton.removeEventListener("touchstart", runAway);
+          showPopup(`Aarush: ${hoverMessages[messageIndex]}`);
         }
       }
 
-      // Make No button dodge (only if not frozen)
-      if (hoverCount <= hoverMessages.length * 7) {
+      // Final message and remove No button at 36th hover
+      if (hoverCount === 36) {
+        showPopup("Aarush: You can't say No 😈💖");
+        noButton.style.display = "none";
+        noButton.removeEventListener("mouseenter", runAway);
+        noButton.removeEventListener("touchstart", runAway);
+      }
+
+      // Make No button dodge only before 36th hover
+      if (hoverCount < 36) {
         noButton.style.position = "fixed";
         noButton.style.zIndex = "9999";
 
