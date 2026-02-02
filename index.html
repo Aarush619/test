@@ -1,39 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Yes / No</title>
+  <meta charset="UTF-8">
+  <title>Be My Valentine 💘</title>
   <style>
-    .yes-button, .no-button {
-      font-size: 16px;
+    body {
+      background-color: #ffe6f0;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    h1 {
+      color: #ff4d88;
+      font-size: 2.5em;
+    }
+
+    img {
+      width: 250px;
+      margin: 20px 0;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 12px 24px;
       margin: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .yes-button {
+      background-color: #ff4d88;
+      color: white;
+    }
+
+    .no-button {
+      background-color: #cccccc;
+      position: absolute;
     }
   </style>
 </head>
 <body>
 
-  <button class="yes-button" onclick="handleYesClick()">Yes</button>
-  <button class="no-button" onclick="handleNoClick()">No</button>
+  <h1>Will you be my Valentine? 💖</h1>
+
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTFjZDI1OTIwM2VjNjUxNDU5NDkzYzE0NTY3NTI0NjYzYjU2MmQ5NCZjdD1n/3oriO0OEd9QIDdllqo/giphy.gif" alt="Cute gif">
+
+  <br>
+
+  <button class="yes-button" onclick="handleYesClick()">Yes 💕</button>
+  <button class="no-button" onclick="handleNoClick()">No 😢</button>
 
   <script>
-    let messageIndex = 0;
-    const messages = ["No?", "Are you sure?", "Really sure?", "Last chance!"];
-
     const noButton = document.querySelector('.no-button');
     const yesButton = document.querySelector('.yes-button');
 
     function handleNoClick() {
-      noButton.textContent = messages[messageIndex];
-      messageIndex = (messageIndex + 1) % messages.length;
+      const x = Math.random() * (window.innerWidth - noButton.offsetWidth);
+      const y = Math.random() * (window.innerHeight - noButton.offsetHeight);
+      noButton.style.left = `${x}px`;
+      noButton.style.top = `${y}px`;
 
       const currentSize = parseFloat(
         window.getComputedStyle(yesButton).fontSize
       );
-      yesButton.style.fontSize = `${currentSize * 1.5}px`;
+      yesButton.style.fontSize = `${currentSize + 5}px`;
     }
 
     function handleYesClick() {
-      window.location.href = "yes_page.html";
+      document.body.innerHTML = `
+        <h1>YAYYYY 💘🥰</h1>
+        <p>You just made my day!</p>
+        <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif">
+      `;
     }
   </script>
 
