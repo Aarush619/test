@@ -81,44 +81,55 @@
     function runAway() {
       hoverCount++;
 
-      // Show a special message every 7 hovers
+      // Sequential message every 7 hovers
       if (hoverCount % 7 === 0) {
-        const message = hoverMessages[Math.floor(Math.random() * hoverMessages.length)];
-        alert(message);
+        const messageIndex = Math.floor(hoverCount / 7) - 1;
+
+        if (messageIndex < hoverMessages.length) {
+          alert(hoverMessages[messageIndex]);
+        } else if (messageIndex === hoverMessages.length) {
+          alert("You can't say No 😈💖");
+          // Optionally freeze the button after final message:
+          noButton.removeEventListener("mouseenter", runAway);
+          noButton.removeEventListener("touchstart", runAway);
+        }
       }
 
-      // Make the No button dodge
-      noButton.style.position = "fixed";
-      noButton.style.zIndex = "9999";
+      // Make No button dodge (only if not frozen)
+      if (hoverCount <= hoverMessages.length * 7) {
+        noButton.style.position = "fixed";
+        noButton.style.zIndex = "9999";
 
-      const yesRect = yesButton.getBoundingClientRect();
-      const padding = 30;
+        const yesRect = yesButton.getBoundingClientRect();
+        const padding = 30;
 
-      let x, y;
-      let overlapping = true;
+        let x, y;
+        let overlapping = true;
 
-      while (overlapping) {
-        x = Math.random() * (window.innerWidth - noButton.offsetWidth);
-        y = Math.random() * (window.innerHeight - noButton.offsetHeight);
+        while (overlapping) {
+          x = Math.random() * (window.innerWidth - noButton.offsetWidth);
+          y = Math.random() * (window.innerHeight - noButton.offsetHeight);
 
-        const noRect = {
-          left: x,
-          right: x + noButton.offsetWidth,
-          top: y,
-          bottom: y + noButton.offsetHeight
-        };
+          const noRect = {
+            left: x,
+            right: x + noButton.offsetWidth,
+            top: y,
+            bottom: y + noButton.offsetHeight
+          };
 
-        overlapping = !(
-          noRect.right < yesRect.left - padding ||
-          noRect.left > yesRect.right + padding ||
-          noRect.bottom < yesRect.top - padding ||
-          noRect.top > yesRect.bottom + padding
-        );
+          overlapping = !(
+            noRect.right < yesRect.left - padding ||
+            noRect.left > yesRect.right + padding ||
+            noRect.bottom < yesRect.top - padding ||
+            noRect.top > yesRect.bottom + padding
+          );
+        }
+
+        noButton.style.left = `${x}px`;
+        noButton.style.top = `${y}px`;
       }
 
-      noButton.style.left = `${x}px`;
-      noButton.style.top = `${y}px`;
-
+      // Grow Yes button
       const currentSize = parseFloat(window.getComputedStyle(yesButton).fontSize);
       yesButton.style.fontSize = `${currentSize + 4}px`;
     }
