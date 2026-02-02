@@ -35,4 +35,85 @@
       padding: 14px 30px;
       border: none;
       border-radius: 12px;
-      cursor: poi
+      cursor: pointer;
+    }
+
+    .yes-button {
+      background-color: #ff4d88;
+      color: white;
+      transition: font-size 0.2s ease;
+    }
+
+    .no-button {
+      background-color: #d6d6d6;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Will you be my Valentine? 💖✨</h1>
+
+  <img
+    src="https://gifak.net/wp-content/uploads/2022/12/cute-kitten-gif-1.gif"
+    alt="Cute kitten"
+  >
+
+  <div class="buttons">
+    <button class="yes-button" onclick="handleYesClick()">Yes 💕</button>
+    <button class="no-button" onclick="handleNoClick()">No 😢</button>
+  </div>
+
+  <script>
+    const noButton = document.querySelector('.no-button');
+    const yesButton = document.querySelector('.yes-button');
+
+    function handleNoClick() {
+      noButton.style.position = "fixed";
+      noButton.style.zIndex = "9999";
+
+      const yesRect = yesButton.getBoundingClientRect();
+      const padding = 20;
+
+      let x, y;
+      let overlapping = true;
+
+      while (overlapping) {
+        x = Math.random() * (window.innerWidth - noButton.offsetWidth);
+        y = Math.random() * (window.innerHeight - noButton.offsetHeight);
+
+        const noRect = {
+          left: x,
+          right: x + noButton.offsetWidth,
+          top: y,
+          bottom: y + noButton.offsetHeight
+        };
+
+        overlapping = !(
+          noRect.right < yesRect.left - padding ||
+          noRect.left > yesRect.right + padding ||
+          noRect.bottom < yesRect.top - padding ||
+          noRect.top > yesRect.bottom + padding
+        );
+      }
+
+      noButton.style.left = `${x}px`;
+      noButton.style.top = `${y}px`;
+
+      const currentSize = parseFloat(
+        window.getComputedStyle(yesButton).fontSize
+      );
+      yesButton.style.fontSize = `${currentSize + 6}px`;
+    }
+
+    function handleYesClick() {
+      document.body.innerHTML = `
+        <h1>YAYYYY 💘🥰</h1>
+        <p style="font-size: 1.5em;">You just made my heart very happy 💖</p>
+        <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif">
+      `;
+    }
+  </script>
+
+</body>
+</html>
