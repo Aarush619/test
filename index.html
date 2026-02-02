@@ -48,6 +48,24 @@
       background-color: #d6d6d6;
       z-index: 9999;
     }
+
+    /* Custom popup styling */
+    #popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff0f5;
+      border: 2px solid #ff4d88;
+      border-radius: 12px;
+      padding: 20px 30px;
+      font-size: 20px;
+      color: #ff4d88;
+      z-index: 10000;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 <body>
@@ -64,9 +82,13 @@
     <button class="no-button">No 😢</button>
   </div>
 
+  <!-- Custom popup div -->
+  <div id="popup"></div>
+
   <script>
     const noButton = document.querySelector('.no-button');
     const yesButton = document.querySelector('.yes-button');
+    const popup = document.getElementById('popup');
 
     let hoverCount = 0;
 
@@ -78,6 +100,15 @@
       "Stop hovering, give Yes a chance! 💖"
     ];
 
+    // Function to show custom popup
+    function showPopup(message) {
+      popup.textContent = message;
+      popup.style.display = 'block';
+      setTimeout(() => {
+        popup.style.display = 'none';
+      }, 2000); // hide after 2 seconds
+    }
+
     function runAway() {
       hoverCount++;
 
@@ -86,10 +117,9 @@
         const messageIndex = Math.floor(hoverCount / 7) - 1;
 
         if (messageIndex < hoverMessages.length) {
-          alert(`aarush says ${hoverMessages[messageIndex]}`);
+          showPopup(`aaron say ${hoverMessages[messageIndex]}`);
         } else if (messageIndex === hoverMessages.length) {
-          alert("aarush says You can't say No 😈💖");
-          // Optionally freeze the button after final message:
+          showPopup("aaron say You can't say No 😈💖");
           noButton.removeEventListener("mouseenter", runAway);
           noButton.removeEventListener("touchstart", runAway);
         }
