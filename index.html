@@ -60,20 +60,23 @@
   >
 
   <div class="buttons">
-    <button class="yes-button" onclick="handleYesClick()">Yes 💕</button>
-    <button class="no-button" onclick="handleNoClick()">No 😢</button>
+    <button class="yes-button">Yes 💕</button>
+    <button class="no-button">No 😢</button>
   </div>
 
   <script>
     const noButton = document.querySelector('.no-button');
     const yesButton = document.querySelector('.yes-button');
 
-    function handleNoClick() {
+    noButton.addEventListener("mouseenter", runAway);
+    noButton.addEventListener("touchstart", runAway); // mobile support
+
+    function runAway() {
       noButton.style.position = "fixed";
       noButton.style.zIndex = "9999";
 
       const yesRect = yesButton.getBoundingClientRect();
-      const padding = 20;
+      const padding = 30;
 
       let x, y;
       let overlapping = true;
@@ -103,16 +106,16 @@
       const currentSize = parseFloat(
         window.getComputedStyle(yesButton).fontSize
       );
-      yesButton.style.fontSize = `${currentSize + 6}px`;
+      yesButton.style.fontSize = `${currentSize + 4}px`;
     }
 
-    function handleYesClick() {
+    yesButton.addEventListener("click", () => {
       document.body.innerHTML = `
         <h1>YAYYYY 💘🥰</h1>
         <p style="font-size: 1.5em;">You just made my heart very happy 💖</p>
         <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif">
       `;
-    }
+    });
   </script>
 
 </body>
