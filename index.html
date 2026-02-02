@@ -47,31 +47,6 @@
     .no-button {
       background-color: #d6d6d6;
       z-index: 9999;
-      position: fixed; /* for dodging */
-    }
-
-    /* Custom popup style */
-    #popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #fff0f5;
-      border: 2px solid #ff4d88;
-      border-radius: 12px;
-      padding: 20px 30px;
-      font-size: 20px;
-      color: #ff4d88;
-      z-index: 10000;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      animation: popupAnimation 0.3s ease;
-    }
-
-    @keyframes popupAnimation {
-      0% { transform: translate(-50%, -60%); opacity: 0; }
-      100% { transform: translate(-50%, -50%); opacity: 1; }
     }
   </style>
 </head>
@@ -89,13 +64,9 @@
     <button class="no-button">No 😢</button>
   </div>
 
-  <!-- Custom popup div -->
-  <div id="popup"></div>
-
   <script>
     const noButton = document.querySelector('.no-button');
     const yesButton = document.querySelector('.yes-button');
-    const popup = document.getElementById('popup');
 
     let hoverCount = 0;
 
@@ -107,17 +78,6 @@
       "Stop hovering, give Yes a chance! 💖"
     ];
 
-    // Function to show custom popup
-    function showPopup(message) {
-      popup.textContent = `aaron say ${message}`;
-      popup.style.display = "block";
-
-      // Hide popup after 2 seconds
-      setTimeout(() => {
-        popup.style.display = "none";
-      }, 2000);
-    }
-
     function runAway() {
       hoverCount++;
 
@@ -126,9 +86,10 @@
         const messageIndex = Math.floor(hoverCount / 7) - 1;
 
         if (messageIndex < hoverMessages.length) {
-          showPopup(hoverMessages[messageIndex]);
+          alert(`aarush says ${hoverMessages[messageIndex]}`);
         } else if (messageIndex === hoverMessages.length) {
-          showPopup("You can't say No 😈💖");
+          alert("aarush says You can't say No 😈💖");
+          // Optionally freeze the button after final message:
           noButton.removeEventListener("mouseenter", runAway);
           noButton.removeEventListener("touchstart", runAway);
         }
@@ -136,6 +97,9 @@
 
       // Make No button dodge (only if not frozen)
       if (hoverCount <= hoverMessages.length * 7) {
+        noButton.style.position = "fixed";
+        noButton.style.zIndex = "9999";
+
         const yesRect = yesButton.getBoundingClientRect();
         const padding = 30;
 
