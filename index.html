@@ -86,9 +86,9 @@
         const messageIndex = Math.floor(hoverCount / 7) - 1;
 
         if (messageIndex < hoverMessages.length) {
-          alert(hoverMessages[messageIndex]);
+          alert(`aarush says ${hoverMessages[messageIndex]}`);
         } else if (messageIndex === hoverMessages.length) {
-          alert("You can't say No 😈💖");
+          alert("aarush says You can't say No 😈💖");
           // Optionally freeze the button after final message:
           noButton.removeEventListener("mouseenter", runAway);
           noButton.removeEventListener("touchstart", runAway);
