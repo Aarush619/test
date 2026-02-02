@@ -68,10 +68,26 @@
     const noButton = document.querySelector('.no-button');
     const yesButton = document.querySelector('.yes-button');
 
-    noButton.addEventListener("mouseenter", runAway);
-    noButton.addEventListener("touchstart", runAway); // mobile support
+    let hoverCount = 0;
+
+    const hoverMessages = [
+      "Why are you hovering on No so many times? 😏",
+      "Hmm… still hovering? 💔",
+      "Are you trying to say No? 🥺",
+      "No, No… not so fast! 😅",
+      "Stop hovering, give Yes a chance! 💖"
+    ];
 
     function runAway() {
+      hoverCount++;
+
+      // Show a special message every 7 hovers
+      if (hoverCount % 7 === 0) {
+        const message = hoverMessages[Math.floor(Math.random() * hoverMessages.length)];
+        alert(message);
+      }
+
+      // Make the No button dodge
       noButton.style.position = "fixed";
       noButton.style.zIndex = "9999";
 
@@ -103,11 +119,13 @@
       noButton.style.left = `${x}px`;
       noButton.style.top = `${y}px`;
 
-      const currentSize = parseFloat(
-        window.getComputedStyle(yesButton).fontSize
-      );
+      const currentSize = parseFloat(window.getComputedStyle(yesButton).fontSize);
       yesButton.style.fontSize = `${currentSize + 4}px`;
     }
+
+    // Event listeners for desktop hover and mobile touch
+    noButton.addEventListener("mouseenter", runAway);
+    noButton.addEventListener("touchstart", runAway);
 
     yesButton.addEventListener("click", () => {
       document.body.innerHTML = `
