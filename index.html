@@ -13,46 +13,31 @@
       background: pink;
     }
 
-    /* Beating hearts background */
-    /* Pure CSS heart-shaped beating background */
+    /* CSS-only heart-shaped beating background (SVG-based, reliable) */
     .hearts-bg {
       position: fixed;
       inset: 0;
       z-index: -2;
       background-color: #ffd1dc;
-      overflow: hidden;
+    
+      background-image: url("data:image/svg+xml;utf8,\
+    <svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 32 32'>\
+    <path fill='%23ff4d88' d='M23.6 2c-2.3 0-4.3 1.2-5.6 3-1.3-1.8-3.3-3-5.6-3C8.1 2 5 5.1 5 9.4c0 6.1 11.4 12.6 13 13.5 1.6-.9 13-7.4 13-13.5C31 5.1 27.9 2 23.6 2z'/>\
+    </svg>");
+      background-size: 80px 80px;
+      animation: heartBeatBg 1.4s ease-in-out infinite;
+      opacity: 0.35;
     }
     
-    .hearts-bg::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image:
-        radial-gradient(circle at 30% 30%, #ff4d88 8px, transparent 9px),
-        radial-gradient(circle at 50% 30%, #ff4d88 8px, transparent 9px),
-        linear-gradient(#ff4d88 0 0);
-      background-size: 40px 40px;
-      background-position: 0 0;
-      mask:
-        radial-gradient(circle at 30% 30%, #000 8px, transparent 9px),
-        radial-gradient(circle at 50% 30%, #000 8px, transparent 9px),
-        linear-gradient(#000 0 0);
-      -webkit-mask:
-        radial-gradient(circle at 30% 30%, #000 8px, transparent 9px),
-        radial-gradient(circle at 50% 30%, #000 8px, transparent 9px),
-        linear-gradient(#000 0 0);
-      animation: heartBeat 1.4s ease-in-out infinite;
-      opacity: 0.3;
-    }
-    
-    @keyframes heartBeat {
+    @keyframes heartBeatBg {
       0%, 100% {
-        transform: scale(1);
+        background-size: 80px 80px;
       }
       50% {
-        transform: scale(1.08);
+        background-size: 90px 90px;
       }
     }
+
 
     /* BTS GIF container */
     .bts-layer {
