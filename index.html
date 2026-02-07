@@ -13,7 +13,6 @@
       background: pink;
     }
 
-    /* CSS-only heart-shaped beating background */
     .hearts-bg {
       position: fixed;
       inset: 0;
@@ -29,11 +28,10 @@
     }
 
     @keyframes heartBeatBg {
-      0%, 100% { background-size: 80px 80px; }
-      50% { background-size: 90px 90px; }
+      0%,100% { background-size:80px 80px; }
+      50% { background-size:90px 90px; }
     }
 
-    /* BTS GIF container */
     .bts-layer {
       position: fixed;
       inset: 0;
@@ -41,9 +39,7 @@
       z-index: -1;
     }
 
-    .bts-gif {
-      position: absolute;
-    }
+    .bts-gif { position:absolute; }
 
     h1 {
       color: #ff4d88;
@@ -52,50 +48,39 @@
       padding-top: 50px;
     }
 
-    img.main {
-      width: 260px;
-      margin-bottom: 30px;
-    }
+    img.main { width:260px; margin-bottom:30px; }
 
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-    }
+    .buttons { display:flex; justify-content:center; gap:24px; }
 
     button {
-      font-size: 20px;
-      padding: 14px 30px;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
+      font-size:20px;
+      padding:14px 30px;
+      border:none;
+      border-radius:12px;
+      cursor:pointer;
     }
 
-    .yes-button {
-      background-color: #ff4d88;
-      color: white;
-      transition: font-size 0.2s ease;
-    }
-
-    .no-button {
-      background-color: #d6d6d6;
-      z-index: 9999;
-    }
+    .yes-button { background:#ff4d88; color:white; transition:font-size .2s; }
+    .no-button { background:#d6d6d6; z-index:9999; }
 
     #popup {
-      display: none;
+      display:none;
+      position:fixed;
+      top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      background:#fff0f5;
+      border:2px solid #ff4d88;
+      border-radius:12px;
+      padding:20px 30px;
+      font-size:20px;
+      color:#ff4d88;
+      z-index:10000;
+    }
+
+    canvas#confetti {
       position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #fff0f5;
-      border: 2px solid #ff4d88;
-      border-radius: 12px;
-      padding: 20px 30px;
-      font-size: 20px;
-      color: #ff4d88;
-      z-index: 10000;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      inset: 0;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -107,11 +92,8 @@
 
   <h1>Will you be my Valentine? 💖✨</h1>
 
-  <img
-    class="main"
-    src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
-    alt="Cute kitten"
-  >
+  <img class="main"
+    src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
 
   <div class="buttons">
     <button class="yes-button">Yes 💕</button>
@@ -121,106 +103,87 @@
   <div id="popup"></div>
 
   <script>
-    /* ========= BTS GIF CONFIG ========= */
+    /* BTS GIFS */
     const btsGifs = [
-      { src: "https://qph.cf2.quoracdn.net/main-qimg-a7580bb59048a22b6cf034f30944fb78", x: 80, y: 120, size: 200 },
-      { src: "https://media1.tenor.com/m/hZgJnsQD3h8AAAAd/jimin.gif", x: 1500, y: 180, size: 200 },
-      { src: "https://media1.tenor.com/m/RRr9yqzY5B8AAAAC/jungkook-dawa.gif", x: 80, y: 420, size: 200 },
-      { src: "https://media1.tenor.com/m/WmKmDWoCN2wAAAAC/cute-okay.gif", x: 900, y: 600, size: 200 }
+      {src:"https://qph.cf2.quoracdn.net/main-qimg-a7580bb59048a22b6cf034f30944fb78",x:80,y:120,size:200},
+      {src:"https://media1.tenor.com/m/hZgJnsQD3h8AAAAd/jimin.gif",x:1500,y:180,size:200},
+      {src:"https://media1.tenor.com/m/RRr9yqzY5B8AAAAC/jungkook-dawa.gif",x:80,y:420,size:200},
+      {src:"https://media1.tenor.com/m/WmKmDWoCN2wAAAAC/cute-okay.gif",x:900,y:600,size:200}
     ];
 
     const btsLayer = document.getElementById("btsLayer");
-    btsGifs.forEach(gif => {
-      const img = document.createElement("img");
-      img.src = gif.src;
-      img.className = "bts-gif";
-      img.style.left = gif.x + "px";
-      img.style.top = gif.y + "px";
-      img.style.width = gif.size + "px";
-      btsLayer.appendChild(img);
+    btsGifs.forEach(g=>{
+      const i=document.createElement("img");
+      i.src=g.src; i.className="bts-gif";
+      i.style.left=g.x+"px"; i.style.top=g.y+"px";
+      i.style.width=g.size+"px";
+      btsLayer.appendChild(i);
     });
 
-    /* ========= ORIGINAL LOGIC ========= */
     const noButton = document.querySelector('.no-button');
     const yesButton = document.querySelector('.yes-button');
     const popup = document.getElementById('popup');
+    let hoverCount=0;
 
-    let hoverCount = 0;
-    const hoverMessages = [
-      "Why are you hovering on No so many times? 😏",
-      "Hmm… still hovering? 💔",
-      "Are you trying to say No? 🥺",
-      "No, No… not so fast! 😅",
-      "Stop hovering, give Yes a chance! 💖"
-    ];
-
-    function showPopup(message) {
-      popup.textContent = message;
-      popup.style.display = 'block';
-      setTimeout(() => popup.style.display = 'none', 2000);
+    function showPopup(m){
+      popup.textContent=m;
+      popup.style.display='block';
+      setTimeout(()=>popup.style.display='none',2000);
     }
 
-    function runAway() {
+    function runAway(){
       hoverCount++;
-
-      if (hoverCount % 7 === 0 && hoverCount < 36) {
-        showPopup(`Aarush: ${hoverMessages[Math.floor(hoverCount / 7) - 1]}`);
+      if(hoverCount%7===0 && hoverCount<36)
+        showPopup("Aarush: Stop hovering 😅");
+      if(hoverCount===36) noButton.style.display="none";
+      if(hoverCount<36){
+        noButton.style.position="fixed";
+        noButton.style.left=Math.random()*(innerWidth-120)+"px";
+        noButton.style.top=Math.random()*(innerHeight-60)+"px";
       }
-
-      if (hoverCount === 36) {
-        showPopup("Aarush: You can't say No 😈💖");
-        noButton.style.display = "none";
-      }
-
-      if (hoverCount < 36) {
-        noButton.style.position = "fixed";
-        noButton.style.left = Math.random() * (window.innerWidth - 120) + "px";
-        noButton.style.top = Math.random() * (window.innerHeight - 60) + "px";
-      }
-
-      const size = parseFloat(getComputedStyle(yesButton).fontSize);
-      yesButton.style.fontSize = size + 4 + "px";
+      yesButton.style.fontSize =
+        parseFloat(getComputedStyle(yesButton).fontSize)+4+"px";
     }
 
-    noButton.addEventListener("mouseenter", runAway);
-    noButton.addEventListener("touchstart", runAway);
+    noButton.addEventListener("mouseenter",runAway);
+    noButton.addEventListener("touchstart",runAway);
 
-    /* ========= YES CLICK (ONLY ADD CONFETTI) ========= */
-    yesButton.addEventListener("click", () => {
-      document.body.innerHTML = `
+    /* CONFETTI FUNCTION (OUTSIDE innerHTML) */
+    function startConfetti(){
+      const canvas=document.getElementById("confetti");
+      const ctx=canvas.getContext("2d");
+      canvas.width=innerWidth; canvas.height=innerHeight;
+
+      const pieces=Array.from({length:200},()=>({
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height,
+        r:Math.random()*6+2,
+        d:Math.random()*3+1
+      }));
+
+      function draw(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        pieces.forEach(p=>{
+          ctx.beginPath();
+          ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+          ctx.fillStyle=`hsl(${Math.random()*360},100%,70%)`;
+          ctx.fill();
+          p.y+=p.d;
+          if(p.y>canvas.height) p.y=0;
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+
+    yesButton.addEventListener("click",()=>{
+      document.body.innerHTML=`
         <canvas id="confetti"></canvas>
         <h1>YAYYYY 💘🥰</h1>
         <p style="font-size:1.5em;">You just made my heart very happy 💖</p>
         <img src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif">
-
-        <script>
-          const canvas = document.getElementById('confetti');
-          const ctx = canvas.getContext('2d');
-          canvas.width = innerWidth;
-          canvas.height = innerHeight;
-
-          let confetti = Array.from({length: 200}, () => ({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            r: Math.random() * 6 + 2,
-            d: Math.random() * 3 + 1
-          }));
-
-          function draw() {
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            confetti.forEach(c => {
-              ctx.beginPath();
-              ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
-              ctx.fillStyle = 'hsl(' + Math.random()*360 + ',100%,70%)';
-              ctx.fill();
-              c.y += c.d;
-              if (c.y > canvas.height) c.y = 0;
-            });
-            requestAnimationFrame(draw);
-          }
-          draw();
-        <\/script>
       `;
+      startConfetti();
     });
   </script>
 
