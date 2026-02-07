@@ -3,13 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <title>Be My Valentine 💘</title>
+
   <style>
     body {
-      background-color: #ffe6f0;
+      margin: 0;
       font-family: Arial, sans-serif;
+      overflow: hidden;
+      background: #ffe6f0;
+    }
+
+    /* ===== BACKGROUNDS ===== */
+
+    .hearts-bg,
+    .confetti-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .hearts-bg {
+      z-index: 1;
+      background-color: #ffd6e5;
+      background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 32 32'>\
+<path fill='%23ff4d88' d='M23.6 2c-2.3 0-4.3 1.4-5.6 3.3C16.7 3.4 14.7 2 12.4 2 8.1 2 5 5.1 5 9.4c0 6.1 11.4 12.6 13 13.5 1.6-.9 13-7.4 13-13.5C31 5.1 27.9 2 23.6 2z'/>\
+</svg>");
+      background-size: 80px 80px;
+      opacity: 0.35;
+      animation: heartPulse 1.4s ease-in-out infinite;
+    }
+
+    .confetti-bg {
+      z-index: 1;
+      display: none;
+      background-image:
+        linear-gradient(#ff4d88 0 0),
+        linear-gradient(#ffd166 0 0),
+        linear-gradient(#8ecae6 0 0),
+        linear-gradient(#b5179e 0 0),
+        linear-gradient(#ff85b3 0 0);
+      background-size:
+        8px 8px,
+        6px 10px,
+        10px 6px,
+        7px 12px,
+        9px 9px;
+      background-repeat: repeat;
+      animation: confettiFall 6s linear infinite;
+      opacity: 0.6;
+    }
+
+    @keyframes heartPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes confettiFall {
+      from { background-position: 0 0; }
+      to { background-position: 0 600px; }
+    }
+
+    /* ===== FOREGROUND APP ===== */
+
+    .app {
+      position: relative;
+      z-index: 10;
       text-align: center;
       padding-top: 50px;
-      overflow: hidden;
     }
 
     h1 {
@@ -26,7 +86,6 @@
     .buttons {
       display: flex;
       justify-content: center;
-      align-items: center;
       gap: 24px;
     }
 
@@ -46,10 +105,8 @@
 
     .no-button {
       background-color: #d6d6d6;
-      z-index: 9999;
     }
 
-    /* Custom popup styling */
     #popup {
       display: none;
       position: fixed;
@@ -62,33 +119,39 @@
       padding: 20px 30px;
       font-size: 20px;
       color: #ff4d88;
-      z-index: 10000;
-      text-align: center;
+      z-index: 20;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
   </style>
 </head>
+
 <body>
 
-  <h1>Will you be my Valentine? 💖✨</h1>
+  <!-- BACKGROUNDS -->
+  <div class="hearts-bg" id="heartsBg"></div>
+  <div class="confetti-bg" id="confettiBg"></div>
 
-  <img
-    src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTFjZDI1OTIwM2VjNjUxNDU5NDkzYzE0NTY3NTI0NjYzYjU2MmQ5NCZjdD1n/3oriO0OEd9QIDdllqo/giphy.gif"
-    alt="Cute kitten"
-  >
+  <!-- FOREGROUND -->
+  <div class="app" id="app">
+    <h1>Will you be my Valentine? 💖✨</h1>
 
-  <div class="buttons">
-    <button class="yes-button">Yes 💕</button>
-    <button class="no-button">No 😢</button>
+    <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+
+    <div class="buttons">
+      <button class="yes-button">Yes 💕</button>
+      <button class="no-button">No 😢</button>
+    </div>
   </div>
 
-  <!-- Custom popup div -->
   <div id="popup"></div>
 
   <script>
     const noButton = document.querySelector('.no-button');
     const yesButton = document.querySelector('.yes-button');
     const popup = document.getElementById('popup');
+    const heartsBg = document.getElementById('heartsBg');
+    const confettiBg = document.getElementById('confettiBg');
+    const app = document.getElementById('app');
 
     let hoverCount = 0;
 
@@ -100,82 +163,44 @@
       "Stop hovering, give Yes a chance! 💖"
     ];
 
-    // Function to show custom popup
-    function showPopup(message) {
-      popup.textContent = message;
-      popup.style.display = 'block';
-      setTimeout(() => {
-        popup.style.display = 'none';
-      }, 2000); // hide after 2 seconds
+    function showPopup(msg) {
+      popup.textContent = msg;
+      popup.style.display = "block";
+      setTimeout(() => popup.style.display = "none", 2000);
     }
 
     function runAway() {
       hoverCount++;
 
-      // Sequential messages every 7 hovers
       if (hoverCount % 7 === 0 && hoverCount < 36) {
-        const messageIndex = Math.floor(hoverCount / 7) - 1;
-        if (messageIndex < hoverMessages.length) {
-          showPopup(`Aarush: ${hoverMessages[messageIndex]}`);
-        }
+        showPopup(`Aarush: ${hoverMessages[Math.floor(hoverCount / 7) - 1]}`);
       }
 
-      // Final message and remove No button at 36th hover
       if (hoverCount === 36) {
         showPopup("Aarush: You can't say No 😈💖");
         noButton.style.display = "none";
-        noButton.removeEventListener("mouseenter", runAway);
-        noButton.removeEventListener("touchstart", runAway);
+        return;
       }
 
-      // Make No button dodge only before 36th hover
-      if (hoverCount < 36) {
-        noButton.style.position = "fixed";
-        noButton.style.zIndex = "9999";
+      noButton.style.position = "fixed";
+      noButton.style.left = Math.random() * (window.innerWidth - 120) + "px";
+      noButton.style.top = Math.random() * (window.innerHeight - 60) + "px";
 
-        const yesRect = yesButton.getBoundingClientRect();
-        const padding = 30;
-
-        let x, y;
-        let overlapping = true;
-
-        while (overlapping) {
-          x = Math.random() * (window.innerWidth - noButton.offsetWidth);
-          y = Math.random() * (window.innerHeight - noButton.offsetHeight);
-
-          const noRect = {
-            left: x,
-            right: x + noButton.offsetWidth,
-            top: y,
-            bottom: y + noButton.offsetHeight
-          };
-
-          overlapping = !(
-            noRect.right < yesRect.left - padding ||
-            noRect.left > yesRect.right + padding ||
-            noRect.bottom < yesRect.top - padding ||
-            noRect.top > yesRect.bottom + padding
-          );
-        }
-
-        noButton.style.left = `${x}px`;
-        noButton.style.top = `${y}px`;
-      }
-
-      // Grow Yes button
-      const currentSize = parseFloat(window.getComputedStyle(yesButton).fontSize);
-      yesButton.style.fontSize = `${currentSize + 4}px`;
+      const size = parseFloat(getComputedStyle(yesButton).fontSize);
+      yesButton.style.fontSize = size + 4 + "px";
     }
 
-    // Event listeners for desktop hover and mobile touch
     noButton.addEventListener("mouseenter", runAway);
     noButton.addEventListener("touchstart", runAway);
 
     yesButton.addEventListener("click", () => {
-      document.body.innerHTML = `
+      heartsBg.style.display = "none";
+      confettiBg.style.display = "block";
+
+      app.innerHTML = `
         <h1>YAYYYY 💘🥰</h1>
-        <p style="font-size: 1.5em;">You just made my heart very happy 💖</p>
-        <img src="https://64.media.tumblr.com/921d0ec29fe4e14f8a84b3c15430f6dd/58ce11367b25fe38-ac/s400x600/2c69d833c83abad15735339531179a689df76276.gifv">
+        <p style="font-size:1.5em;">You just made my heart very happy 💖</p>
+        <img src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif">
       `;
     });
   </script>
