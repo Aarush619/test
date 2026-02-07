@@ -8,42 +8,40 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
+      text-align: center;
       overflow: hidden;
       background: #ffe6ee;
     }
 
-    /* ===== BACKGROUNDS ===== */
+    /* ===== BACKGROUND SYSTEM (BULLETPROOF) ===== */
 
-    .hearts-bg,
-    .confetti-bg {
+    body::before {
+      content: "";
       position: fixed;
       inset: 0;
+      z-index: -1;
       pointer-events: none;
-      z-index: 0;
+      opacity: 0.45;
     }
 
-    .hearts-bg {
+    /* HEARTS (default) */
+    body.hearts::before {
       background-color: #ffd1dc;
       background-image: url("data:image/svg+xml;utf8,\
 <svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 32 32'>\
 <path fill='%23ff4d88' d='M23.6 2c-2.3 0-4.3 1.2-5.6 3-1.3-1.8-3.3-3-5.6-3C8.1 2 5 5.1 5 9.4c0 6.1 11.4 12.6 13 13.5 1.6-.9 13-7.4 13-13.5C31 5.1 27.9 2 23.6 2z'/>\
 </svg>");
       background-size: 80px 80px;
-      animation: heartBeatBg 1.4s ease-in-out infinite;
-      opacity: 0.35;
+      animation: heartBeat 1.4s ease-in-out infinite;
     }
 
-    .hearts-bg.hidden {
-      display: none;
-    }
-
-    @keyframes heartBeatBg {
-      0%, 100% { background-size: 80px 80px; }
+    @keyframes heartBeat {
+      0%,100% { background-size: 80px 80px; }
       50% { background-size: 90px 90px; }
     }
 
-    .confetti-bg {
-      display: none;
+    /* CONFETTI */
+    body.confetti::before {
       background-image:
         linear-gradient(#ff4d88 0 0),
         linear-gradient(#ffd166 0 0),
@@ -58,7 +56,6 @@
         9px 9px;
       background-repeat: repeat;
       animation: confettiFall 6s linear infinite;
-      opacity: 0.7;
     }
 
     @keyframes confettiFall {
@@ -84,20 +81,8 @@
 
     .content {
       position: relative;
-      z-index: 2;
-      text-align: center;
-      padding-top: 50px;
-    }
-
-    .bts-layer {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
       z-index: 1;
-    }
-
-    .bts-gif {
-      position: absolute;
+      padding-top: 50px;
     }
 
     h1 {
@@ -106,7 +91,7 @@
       margin-bottom: 30px;
     }
 
-    img.main {
+    img {
       width: 260px;
       margin-bottom: 30px;
     }
@@ -134,39 +119,15 @@
     .no-button {
       background-color: #d6d6d6;
     }
-
-    #popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #fff0f5;
-      border: 2px solid #ff4d88;
-      border-radius: 12px;
-      padding: 20px 30px;
-      font-size: 20px;
-      color: #ff4d88;
-      z-index: 5;
-    }
   </style>
 </head>
 
-<body>
+<body class="hearts">
 
-  <!-- BACKGROUNDS -->
-  <div class="hearts-bg" id="heartsBg"></div>
-  <div class="confetti-bg" id="confettiBg"></div>
-
-  <!-- BTS -->
-  <div class="bts-layer" id="btsLayer"></div>
-
-  <!-- CONTENT -->
   <div class="content" id="content">
     <h1>Will you be my Valentine? 💖✨</h1>
 
-    <img class="main"
-      src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+    <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
 
     <div class="buttons">
       <button class="yes-button">Yes 💕</button>
@@ -174,52 +135,30 @@
     </div>
   </div>
 
-  <div id="popup"></div>
-
   <script>
-    const btsGifs = [
-      { src: "https://qph.cf2.quoracdn.net/main-qimg-a7580bb59048a22b6cf034f30944fb78", x: 80, y: 120, size: 200 },
-      { src: "https://media1.tenor.com/m/hZgJnsQD3h8AAAAd/jimin.gif", x: 1200, y: 180, size: 200 },
-      { src: "https://media1.tenor.com/m/RRr9yqzY5B8AAAAC/jungkook-dawa.gif", x: 80, y: 420, size: 200 },
-      { src: "https://media1.tenor.com/m/WmKmDWoCN2wAAAAC/cute-okay.gif", x: 900, y: 600, size: 200 }
-    ];
-
-    const btsLayer = document.getElementById("btsLayer");
-    btsGifs.forEach(g => {
-      const img = document.createElement("img");
-      img.src = g.src;
-      img.className = "bts-gif";
-      img.style.left = g.x + "px";
-      img.style.top = g.y + "px";
-      img.style.width = g.size + "px";
-      btsLayer.appendChild(img);
-    });
-
-    const noButton = document.querySelector('.no-button');
-    const yesButton = document.querySelector('.yes-button');
+    const yesButton = document.querySelector(".yes-button");
+    const noButton = document.querySelector(".no-button");
 
     noButton.addEventListener("mouseenter", () => {
       noButton.style.position = "fixed";
       noButton.style.left = Math.random() * (window.innerWidth - 120) + "px";
       noButton.style.top = Math.random() * (window.innerHeight - 60) + "px";
+
       const size = parseFloat(getComputedStyle(yesButton).fontSize);
       yesButton.style.fontSize = size + 4 + "px";
     });
 
     yesButton.addEventListener("click", () => {
-      document.getElementById("heartsBg").style.display = "none";
-      document.getElementById("confettiBg").style.display = "block";
-      document.getElementById("btsLayer").remove();
+      document.body.classList.remove("hearts");
+      document.body.classList.add("confetti");
+
       document.querySelector(".buttons").remove();
-
       document.querySelector("h1").innerText = "YAYYYY 💘🥰";
-      document.querySelector("img.main").src =
-        "https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif";
 
-      const p = document.createElement("p");
-      p.style.fontSize = "1.5em";
-      p.innerText = "You just made my heart very happy 💖";
-      document.getElementById("content").appendChild(p);
+      const msg = document.createElement("p");
+      msg.style.fontSize = "1.5em";
+      msg.innerText = "You just made my heart very happy 💖";
+      document.getElementById("content").appendChild(msg);
     });
   </script>
 
