@@ -124,6 +124,13 @@
     const yesButton = document.querySelector('.yes-button');
     const popup = document.getElementById('popup');
     let hoverCount=0;
+    const hoverMessages = [
+      "Why are you hovering on No so many times? 😏",
+      "Hmm… still hovering? 💔",
+      "Are you trying to say No? 🥺",
+      "No, No… not so fast! 😅",
+      "Stop hovering, give Yes a chance! 💖"
+    ];
 
     function showPopup(m){
       popup.textContent=m;
@@ -133,9 +140,13 @@
 
     function runAway(){
       hoverCount++;
-      if(hoverCount%7===0 && hoverCount<36)
-        showPopup("Aarush: Stop hovering 😅");
-      if(hoverCount===36) noButton.style.display="none";
+      if(hoverCount%7===0 && hoverCount<36) {
+        showPopup(`Aarush: ${hoverMessages[Math.floor(hoverCount / 7) - 1]}`);
+      }
+      if (hoverCount === 36) {
+        showPopup("Aarush: You can't say No 😈💖");
+        noButton.style.display = "none";
+      }
       if(hoverCount<36){
         noButton.style.position="fixed";
         noButton.style.left=Math.random()*(innerWidth-120)+"px";
