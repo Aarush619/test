@@ -24,19 +24,22 @@
     <svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 32 32'>\
     <path fill='%23ff4d88' d='M23.6 2c-2.3 0-4.3 1.2-5.6 3-1.3-1.8-3.3-3-5.6-3C8.1 2 5 5.1 5 9.4c0 6.1 11.4 12.6 13 13.5 1.6-.9 13-7.4 13-13.5C31 5.1 27.9 2 23.6 2z'/>\
     </svg>");
+    
       background-size: 80px 80px;
       animation: heartBeatBg 1.4s ease-in-out infinite;
       opacity: 0.35;
+      display: block;
+    }
+    
+    .hearts-bg.hidden {
+      display: none;
     }
     
     @keyframes heartBeatBg {
-      0%, 100% {
-        background-size: 80px 80px;
-      }
-      50% {
-        background-size: 90px 90px;
-      }
+      0%, 100% { background-size: 80px 80px; }
+      50% { background-size: 90px 90px; }
     }
+
 
     /* Confetti background (hidden by default) */
     .confetti-bg {
@@ -258,30 +261,25 @@
     noButton.addEventListener("touchstart", runAway);
 
     yesButton.addEventListener("click", () => {
-      // 1️⃣ Stop hearts permanently
-      const hearts = document.getElementById("heartsBg");
-      if (hearts) hearts.remove();
+      // Turn OFF hearts
+      document.getElementById("heartsBg").classList.add("hidden");
     
-      // 2️⃣ Show confetti
+      // Turn ON confetti
       document.getElementById("confettiBg").style.display = "block";
     
-      // 3️⃣ Remove BTS gifs (optional, keeps it clean)
+      // Clean up UI
+      document.querySelector(".buttons").remove();
       document.getElementById("btsLayer")?.remove();
     
-      // 4️⃣ Update text
+      // Update content
       document.querySelector("h1").innerText = "YAYYYY 💘🥰";
     
-      // 5️⃣ Remove buttons
-      document.querySelector(".buttons").remove();
-    
-      // 6️⃣ Replace main image
       const mainImg = document.querySelector("img.main");
       if (mainImg) {
         mainImg.src =
           "https://64.media.tumblr.com/921d0ec29fe4e14f8a84b3c15430f6dd/58ce11367b25fe38-ac/s400x600/2c69d833c83abad15735339531179a689df76276.gifv";
       }
     
-      // 7️⃣ Add celebration text
       const msg = document.createElement("p");
       msg.style.fontSize = "1.5em";
       msg.style.marginTop = "20px";
