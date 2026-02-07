@@ -258,27 +258,36 @@
     noButton.addEventListener("touchstart", runAway);
 
     yesButton.addEventListener("click", () => {
-      // Switch background
-      document.getElementById("heartsBg")?.remove();
+      // 1️⃣ Stop hearts permanently
+      const hearts = document.getElementById("heartsBg");
+      if (hearts) hearts.remove();
+    
+      // 2️⃣ Show confetti
       document.getElementById("confettiBg").style.display = "block";
     
-      // Replace main content only
-      document.body.querySelector("h1").innerText = "YAYYYY 💘🥰";
-      document.body.querySelector("img.main").remove();
+      // 3️⃣ Remove BTS gifs (optional, keeps it clean)
+      document.getElementById("btsLayer")?.remove();
     
+      // 4️⃣ Update text
+      document.querySelector("h1").innerText = "YAYYYY 💘🥰";
+    
+      // 5️⃣ Remove buttons
+      document.querySelector(".buttons").remove();
+    
+      // 6️⃣ Replace main image
+      const mainImg = document.querySelector("img.main");
+      if (mainImg) {
+        mainImg.src =
+          "https://64.media.tumblr.com/921d0ec29fe4e14f8a84b3c15430f6dd/58ce11367b25fe38-ac/s400x600/2c69d833c83abad15735339531179a689df76276.gifv";
+      }
+    
+      // 7️⃣ Add celebration text
       const msg = document.createElement("p");
       msg.style.fontSize = "1.5em";
+      msg.style.marginTop = "20px";
       msg.innerText = "You just made my heart very happy 💖";
     
-      const gif = document.createElement("img");
-      gif.src = "https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif";
-      gif.style.width = "260px";
-      gif.style.marginTop = "20px";
-    
       document.body.appendChild(msg);
-      document.body.appendChild(gif);
-    
-      document.querySelector(".buttons").remove();
     });
   </script>
 
