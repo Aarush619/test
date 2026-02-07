@@ -8,77 +8,57 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
+      text-align: center;
       overflow: hidden;
-      background: #ffe6f0;
+      background: pink;
     }
 
-    /* ===== BACKGROUNDS ===== */
+    /* CSS-only heart-shaped beating background (SVG-based, reliable) */
+    .hearts-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background-color: #ffd1dc;
+    
+      background-image: url("data:image/svg+xml;utf8,\
+    <svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 32 32'>\
+    <path fill='%23ff4d88' d='M23.6 2c-2.3 0-4.3 1.2-5.6 3-1.3-1.8-3.3-3-5.6-3C8.1 2 5 5.1 5 9.4c0 6.1 11.4 12.6 13 13.5 1.6-.9 13-7.4 13-13.5C31 5.1 27.9 2 23.6 2z'/>\
+    </svg>");
+      background-size: 80px 80px;
+      animation: heartBeatBg 1.4s ease-in-out infinite;
+      opacity: 0.35;
+    }
+    
+    @keyframes heartBeatBg {
+      0%, 100% {
+        background-size: 80px 80px;
+      }
+      50% {
+        background-size: 90px 90px;
+      }
+    }
 
-    .hearts-bg,
-    .confetti-bg {
+
+    /* BTS GIF container */
+    .bts-layer {
       position: fixed;
       inset: 0;
       pointer-events: none;
+      z-index: -1;
     }
 
-    .hearts-bg {
-      z-index: 1;
-      background-color: #ffd6e5;
-      background-image: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 32 32'>\
-<path fill='%23ff4d88' d='M23.6 2c-2.3 0-4.3 1.4-5.6 3.3C16.7 3.4 14.7 2 12.4 2 8.1 2 5 5.1 5 9.4c0 6.1 11.4 12.6 13 13.5 1.6-.9 13-7.4 13-13.5C31 5.1 27.9 2 23.6 2z'/>\
-</svg>");
-      background-size: 80px 80px;
-      opacity: 0.35;
-      animation: heartPulse 1.4s ease-in-out infinite;
-    }
-
-    .confetti-bg {
-      z-index: 1;
-      display: none;
-      background-image:
-        linear-gradient(#ff4d88 0 0),
-        linear-gradient(#ffd166 0 0),
-        linear-gradient(#8ecae6 0 0),
-        linear-gradient(#b5179e 0 0),
-        linear-gradient(#ff85b3 0 0);
-      background-size:
-        8px 8px,
-        6px 10px,
-        10px 6px,
-        7px 12px,
-        9px 9px;
-      background-repeat: repeat;
-      animation: confettiFall 6s linear infinite;
-      opacity: 0.6;
-    }
-
-    @keyframes heartPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    @keyframes confettiFall {
-      from { background-position: 0 0; }
-      to { background-position: 0 600px; }
-    }
-
-    /* ===== FOREGROUND APP ===== */
-
-    .app {
-      position: relative;
-      z-index: 10;
-      text-align: center;
-      padding-top: 50px;
+    .bts-gif {
+      position: absolute;
     }
 
     h1 {
       color: #ff4d88;
       font-size: 2.8em;
       margin-bottom: 30px;
+      padding-top: 50px;
     }
 
-    img {
+    img.main {
       width: 260px;
       margin-bottom: 30px;
     }
@@ -105,6 +85,7 @@
 
     .no-button {
       background-color: #d6d6d6;
+      z-index: 9999;
     }
 
     #popup {
@@ -119,7 +100,7 @@
       padding: 20px 30px;
       font-size: 20px;
       color: #ff4d88;
-      z-index: 20;
+      z-index: 10000;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
   </style>
@@ -127,31 +108,70 @@
 
 <body>
 
-  <!-- BACKGROUNDS -->
-  <div class="hearts-bg" id="heartsBg"></div>
-  <div class="confetti-bg" id="confettiBg"></div>
+  <!-- Background layers -->
+  <div class="hearts-bg"></div>
+  <div class="bts-layer" id="btsLayer"></div>
 
-  <!-- FOREGROUND -->
-  <div class="app" id="app">
-    <h1>Will you be my Valentine? 💖✨</h1>
+  <h1>Will you be my Valentine? 💖✨</h1>
 
-    <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+  <img
+    class="main"
+    src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
+    alt="Cute kitten"
+  >
 
-    <div class="buttons">
-      <button class="yes-button">Yes 💕</button>
-      <button class="no-button">No 😢</button>
-    </div>
+  <div class="buttons">
+    <button class="yes-button">Yes 💕</button>
+    <button class="no-button">No 😢</button>
   </div>
 
   <div id="popup"></div>
 
   <script>
+    /* ========= BTS GIF CONFIG ========= */
+    const btsGifs = [
+      {
+        src: "https://qph.cf2.quoracdn.net/main-qimg-a7580bb59048a22b6cf034f30944fb78",
+        x: 80,
+        y: 120,
+        size: 200
+      },
+      {
+        src: "https://media1.tenor.com/m/hZgJnsQD3h8AAAAd/jimin.gif",
+        x: 1500,
+        y: 180,
+        size: 200
+      },
+      {
+        src: "https://media1.tenor.com/m/RRr9yqzY5B8AAAAC/jungkook-dawa.gif",
+        x: 80,
+        y: 420,
+        size: 200
+      },
+      {
+        src: "https://media1.tenor.com/m/WmKmDWoCN2wAAAAC/cute-okay.gif",
+        x: 900,
+        y: 600,
+        size: 200
+      }
+    ];
+
+    const btsLayer = document.getElementById("btsLayer");
+
+    btsGifs.forEach(gif => {
+      const img = document.createElement("img");
+      img.src = gif.src;
+      img.className = "bts-gif";
+      img.style.left = gif.x + "px";
+      img.style.top = gif.y + "px";
+      img.style.width = gif.size + "px";
+      btsLayer.appendChild(img);
+    });
+
+    /* ========= YOUR ORIGINAL LOGIC ========= */
     const noButton = document.querySelector('.no-button');
     const yesButton = document.querySelector('.yes-button');
     const popup = document.getElementById('popup');
-    const heartsBg = document.getElementById('heartsBg');
-    const confettiBg = document.getElementById('confettiBg');
-    const app = document.getElementById('app');
 
     let hoverCount = 0;
 
@@ -163,10 +183,10 @@
       "Stop hovering, give Yes a chance! 💖"
     ];
 
-    function showPopup(msg) {
-      popup.textContent = msg;
-      popup.style.display = "block";
-      setTimeout(() => popup.style.display = "none", 2000);
+    function showPopup(message) {
+      popup.textContent = message;
+      popup.style.display = 'block';
+      setTimeout(() => popup.style.display = 'none', 2000);
     }
 
     function runAway() {
@@ -179,12 +199,13 @@
       if (hoverCount === 36) {
         showPopup("Aarush: You can't say No 😈💖");
         noButton.style.display = "none";
-        return;
       }
 
-      noButton.style.position = "fixed";
-      noButton.style.left = Math.random() * (window.innerWidth - 120) + "px";
-      noButton.style.top = Math.random() * (window.innerHeight - 60) + "px";
+      if (hoverCount < 36) {
+        noButton.style.position = "fixed";
+        noButton.style.left = Math.random() * (window.innerWidth - 120) + "px";
+        noButton.style.top = Math.random() * (window.innerHeight - 60) + "px";
+      }
 
       const size = parseFloat(getComputedStyle(yesButton).fontSize);
       yesButton.style.fontSize = size + 4 + "px";
@@ -194,10 +215,7 @@
     noButton.addEventListener("touchstart", runAway);
 
     yesButton.addEventListener("click", () => {
-      heartsBg.style.display = "none";
-      confettiBg.style.display = "block";
-
-      app.innerHTML = `
+      document.body.innerHTML = `
         <h1>YAYYYY 💘🥰</h1>
         <p style="font-size:1.5em;">You just made my heart very happy 💖</p>
         <img src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif">
