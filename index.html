@@ -38,6 +38,48 @@
       }
     }
 
+    /* Confetti background (hidden by default) */
+    .confetti-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background-color: #ffe6ee;
+      background-image:
+        linear-gradient(#ff4d88 0 0),
+        linear-gradient(#ffd166 0 0),
+        linear-gradient(#8ecae6 0 0),
+        linear-gradient(#b5179e 0 0),
+        linear-gradient(#ff85b3 0 0);
+      background-size:
+        8px 8px,
+        6px 10px,
+        10px 6px,
+        7px 12px,
+        9px 9px;
+      background-repeat: repeat;
+      animation: confettiFall 6s linear infinite;
+      display: none;
+      opacity: 0.6;
+    }
+    
+    @keyframes confettiFall {
+      from {
+        background-position:
+          0 0,
+          50px 0,
+          120px 0,
+          200px 0,
+          300px 0;
+      }
+      to {
+        background-position:
+          0 600px,
+          50px 700px,
+          120px 650px,
+          200px 750px,
+          300px 700px;
+      }
+    }
 
     /* BTS GIF container */
     .bts-layer {
@@ -110,6 +152,7 @@
 
   <!-- Background layers -->
   <div class="hearts-bg"></div>
+  <div class="confetti-bg" id="confettiBg"></div>
   <div class="bts-layer" id="btsLayer"></div>
 
   <h1>Will you be my Valentine? 💖✨</h1>
@@ -138,7 +181,7 @@
       },
       {
         src: "https://media1.tenor.com/m/hZgJnsQD3h8AAAAd/jimin.gif",
-        x: 1500,
+        x: 1200,
         y: 180,
         size: 200
       },
@@ -215,11 +258,27 @@
     noButton.addEventListener("touchstart", runAway);
 
     yesButton.addEventListener("click", () => {
-      document.body.innerHTML = `
-        <h1>YAYYYY 💘🥰</h1>
-        <p style="font-size:1.5em;">You just made my heart very happy 💖</p>
-        <img src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif">
-      `;
+      // Switch background
+      document.getElementById("heartsBg")?.remove();
+      document.getElementById("confettiBg").style.display = "block";
+    
+      // Replace main content only
+      document.body.querySelector("h1").innerText = "YAYYYY 💘🥰";
+      document.body.querySelector("img.main").remove();
+    
+      const msg = document.createElement("p");
+      msg.style.fontSize = "1.5em";
+      msg.innerText = "You just made my heart very happy 💖";
+    
+      const gif = document.createElement("img");
+      gif.src = "https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif";
+      gif.style.width = "260px";
+      gif.style.marginTop = "20px";
+    
+      document.body.appendChild(msg);
+      document.body.appendChild(gif);
+    
+      document.querySelector(".buttons").remove();
     });
   </script>
 
