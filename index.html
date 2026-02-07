@@ -3,22 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <title>Be My Valentine 💘</title>
+
   <style>
     body {
-      background-color: #ffe6f0;
+      margin: 0;
       font-family: Arial, sans-serif;
       text-align: center;
-      padding-top: 50px;
       overflow: hidden;
+      background: pink;
+    }
+
+    /* Beating hearts background */
+    .hearts-bg {
+      position: fixed;
+      inset: 0;
+      background-image: url("https://media.giphy.com/media/l4FGrHE7cY2mE1aVO/giphy.gif");
+      background-size: 200px;
+      opacity: 0.35;
+      z-index: -2;
+    }
+
+    /* BTS GIF container */
+    .bts-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .bts-gif {
+      position: absolute;
     }
 
     h1 {
       color: #ff4d88;
       font-size: 2.8em;
       margin-bottom: 30px;
+      padding-top: 50px;
     }
 
-    img {
+    img.main {
       width: 260px;
       margin-bottom: 30px;
     }
@@ -26,7 +50,6 @@
     .buttons {
       display: flex;
       justify-content: center;
-      align-items: center;
       gap: 24px;
     }
 
@@ -49,7 +72,6 @@
       z-index: 9999;
     }
 
-    /* Custom popup styling */
     #popup {
       display: none;
       position: fixed;
@@ -63,17 +85,22 @@
       font-size: 20px;
       color: #ff4d88;
       z-index: 10000;
-      text-align: center;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
   </style>
 </head>
+
 <body>
+
+  <!-- Background layers -->
+  <div class="hearts-bg"></div>
+  <div class="bts-layer" id="btsLayer"></div>
 
   <h1>Will you be my Valentine? 💖✨</h1>
 
   <img
-    src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTFjZDI1OTIwM2VjNjUxNDU5NDkzYzE0NTY3NTI0NjYzYjU2MmQ5NCZjdD1n/3oriO0OEd9QIDdllqo/giphy.gif"
+    class="main"
+    src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
     alt="Cute kitten"
   >
 
@@ -82,10 +109,44 @@
     <button class="no-button">No 😢</button>
   </div>
 
-  <!-- Custom popup div -->
   <div id="popup"></div>
 
   <script>
+    /* ========= BTS GIF CONFIG ========= */
+    const btsGifs = [
+      {
+        src: "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif",
+        x: 80,
+        y: 120,
+        size: 140
+      },
+      {
+        src: "https://media.giphy.com/media/3ohs4BSacFKI7A717y/giphy.gif",
+        x: 900,
+        y: 180,
+        size: 160
+      },
+      {
+        src: "https://media.giphy.com/media/26gslXtQH5GPIxBxm/giphy.gif",
+        x: 500,
+        y: 420,
+        size: 150
+      }
+    ];
+
+    const btsLayer = document.getElementById("btsLayer");
+
+    btsGifs.forEach(gif => {
+      const img = document.createElement("img");
+      img.src = gif.src;
+      img.className = "bts-gif";
+      img.style.left = gif.x + "px";
+      img.style.top = gif.y + "px";
+      img.style.width = gif.size + "px";
+      btsLayer.appendChild(img);
+    });
+
+    /* ========= YOUR ORIGINAL LOGIC ========= */
     const noButton = document.querySelector('.no-button');
     const yesButton = document.querySelector('.yes-button');
     const popup = document.getElementById('popup');
@@ -100,82 +161,42 @@
       "Stop hovering, give Yes a chance! 💖"
     ];
 
-    // Function to show custom popup
     function showPopup(message) {
       popup.textContent = message;
       popup.style.display = 'block';
-      setTimeout(() => {
-        popup.style.display = 'none';
-      }, 2000); // hide after 2 seconds
+      setTimeout(() => popup.style.display = 'none', 2000);
     }
 
     function runAway() {
       hoverCount++;
 
-      // Sequential messages every 7 hovers
       if (hoverCount % 7 === 0 && hoverCount < 36) {
-        const messageIndex = Math.floor(hoverCount / 7) - 1;
-        if (messageIndex < hoverMessages.length) {
-          showPopup(`Aarush: ${hoverMessages[messageIndex]}`);
-        }
+        showPopup(`Aarush: ${hoverMessages[Math.floor(hoverCount / 7) - 1]}`);
       }
 
-      // Final message and remove No button at 36th hover
       if (hoverCount === 36) {
         showPopup("Aarush: You can't say No 😈💖");
         noButton.style.display = "none";
-        noButton.removeEventListener("mouseenter", runAway);
-        noButton.removeEventListener("touchstart", runAway);
       }
 
-      // Make No button dodge only before 36th hover
       if (hoverCount < 36) {
         noButton.style.position = "fixed";
-        noButton.style.zIndex = "9999";
-
-        const yesRect = yesButton.getBoundingClientRect();
-        const padding = 30;
-
-        let x, y;
-        let overlapping = true;
-
-        while (overlapping) {
-          x = Math.random() * (window.innerWidth - noButton.offsetWidth);
-          y = Math.random() * (window.innerHeight - noButton.offsetHeight);
-
-          const noRect = {
-            left: x,
-            right: x + noButton.offsetWidth,
-            top: y,
-            bottom: y + noButton.offsetHeight
-          };
-
-          overlapping = !(
-            noRect.right < yesRect.left - padding ||
-            noRect.left > yesRect.right + padding ||
-            noRect.bottom < yesRect.top - padding ||
-            noRect.top > yesRect.bottom + padding
-          );
-        }
-
-        noButton.style.left = `${x}px`;
-        noButton.style.top = `${y}px`;
+        noButton.style.left = Math.random() * (window.innerWidth - 120) + "px";
+        noButton.style.top = Math.random() * (window.innerHeight - 60) + "px";
       }
 
-      // Grow Yes button
-      const currentSize = parseFloat(window.getComputedStyle(yesButton).fontSize);
-      yesButton.style.fontSize = `${currentSize + 4}px`;
+      const size = parseFloat(getComputedStyle(yesButton).fontSize);
+      yesButton.style.fontSize = size + 4 + "px";
     }
 
-    // Event listeners for desktop hover and mobile touch
     noButton.addEventListener("mouseenter", runAway);
     noButton.addEventListener("touchstart", runAway);
 
     yesButton.addEventListener("click", () => {
       document.body.innerHTML = `
         <h1>YAYYYY 💘🥰</h1>
-        <p style="font-size: 1.5em;">You just made my heart very happy 💖</p>
-        <img src="https://64.media.tumblr.com/921d0ec29fe4e14f8a84b3c15430f6dd/58ce11367b25fe38-ac/s400x600/2c69d833c83abad15735339531179a689df76276.gifv">
+        <p style="font-size:1.5em;">You just made my heart very happy 💖</p>
+        <img src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif">
       `;
     });
   </script>
